@@ -38,10 +38,10 @@ export class IndexedDBService {
     }
 
     Get(id, callback) {
-
-        if (this.db) {
-            this.open = this.indexedDB.open("ItemsDatabase", 1);
-            let request;
+        let request;
+        this.OpenStore();
+        this.open.onsuccess = () => {
+            this.db = this.open.result;
             this.transaction = this.db.transaction("ItemsStore", "readwrite");
             this.itemStore = this.transaction.objectStore("ItemsStore");
 
@@ -49,14 +49,18 @@ export class IndexedDBService {
             request.onsuccess = function (event) {
                 callback(request.result);
             }
-        }
 
+            this.transaction.oncomplete = () => {
+                this.db.close();
+            };
+        }
     }
 
     GetAll(callback) {
-
-        if (this.db) {
-            let request;
+        let request;
+        this.OpenStore();
+        this.open.onsuccess = () => {
+            this.db = this.open.result;
             this.transaction = this.db.transaction("ItemsStore", "readwrite");
             this.itemStore = this.transaction.objectStore("ItemsStore");
 
@@ -68,12 +72,19 @@ export class IndexedDBService {
             request.onsuccess = (event) => {
                 callback(request.result);
             }
-        }
 
+            this.transaction.oncomplete = () => {
+                this.db.close();
+
+
+            };
+        }
     }
 
     Create(item, callback) {
-        if (this.db) {
+        this.OpenStore();
+        this.open.onsuccess = () => {
+            this.db = this.open.result;
             this.transaction = this.db.transaction("ItemsStore", "readwrite");
             this.itemStore = this.transaction.objectStore("ItemsStore");
 
@@ -82,7 +93,7 @@ export class IndexedDBService {
 
             let indexRequests = this.indexStore.delete(item.Id - 1);
             indexRequests.onerror = (event) => {
-
+                
             };
             indexRequests.onsuccess = (event) => {
                 this.indexStore.put(item.Id);
@@ -91,8 +102,9 @@ export class IndexedDBService {
             this.itemStore.put(item);
 
             this.transaction.oncomplete = () => {
-                this.GetAll(callback);
+                this.db.close();
             };
+            this.GetAll(callback);
         }
     }
     Delete(id) {
