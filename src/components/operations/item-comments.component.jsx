@@ -1,5 +1,9 @@
 import * as React from 'react';
-import indexedDBService from '../../services/indexeddb.service';
+import IndexedDBService from '../../services/indexeddb.service';
+import { getSelectedItem } from '../../reducers/items.reducer';
+import { ItemsActions } from '../../reducers/items.reducer';
+import { connect } from 'react-redux';
+import { Link } from "react-router-dom";
 
 class ItemCommentsComponent extends React.Component {
 
@@ -25,12 +29,20 @@ class ItemCommentsComponent extends React.Component {
     }
 
     render() {
-        const renderComments = this.item.Comments.map((comment, index) =>
-            <div key={index}>{comment}</div >
+        let item = this.props.Item && this.props.Item.toJS();
+        let renderComments = item && item.Comments.map((comment, index) =>
+            <div key={index}>
+                {comment}
+            </div>
         );
         return (
             <div>
-                <div>{this.props.Item.Name}</div>
+                <Link
+                    to={"/"}
+                    key={1}>
+                    <button>Home</button>
+                </Link>
+                <div>{item && item.Name}</div>
                 {renderComments ? { renderComments }
                     : undefined}
                 <input
@@ -56,4 +68,12 @@ class ItemCommentsComponent extends React.Component {
     }
 }
 
-export default ItemCommentsComponent;
+const mapStateToPropsItemComments = (state, ownProps) => ({
+    Item: getSelectedItem(state, ownProps.match.params.id)
+});
+
+const mapDispatchToPropsItemComments = (dispatch) => ({
+    GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
+});
+
+export default connect(mapStateToPropsItemComments, mapDispatchToPropsItemComments)(ItemCommentsComponent);

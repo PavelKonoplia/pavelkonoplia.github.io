@@ -19,7 +19,7 @@ export class IndexedDBService {
         this.OpenStore = this.OpenStore.bind(this);
         this.Create = this.Create.bind(this);
         this.Delete = this.Delete.bind(this);
-
+        this.GetAll = this.GetAll.bind(this);
         this.OpenStore();
     }
 
@@ -43,10 +43,8 @@ export class IndexedDBService {
 
             request = this.store.get(id);
             request.onsuccess = function (event) {
-                // callback(event.target.result);
                 callback(request.result);
             }
-            console.log(request);
 
             this.transaction.oncomplete = () => {
                 this.db.close();
@@ -64,12 +62,10 @@ export class IndexedDBService {
 
             request = this.store.getAll();
             request.onerror = (error) => {
-                // callback(event.target.result);
                 console.log('you have error ' + error);
             }
 
             request.onsuccess = (event) => {
-                // callback(event.target.result);
                 callback(request.result);
             }
 
@@ -79,7 +75,7 @@ export class IndexedDBService {
         }
     }
 
-    Create(item) {
+    Create(item, callback) {
         this.OpenStore();
         this.open.onsuccess = () => {
             this.db = this.open.result;
@@ -91,10 +87,9 @@ export class IndexedDBService {
             this.transaction.oncomplete = () => {
                 this.db.close();
             };
+            this.GetAll(callback);
         }
-        console.log(item);
     }
-
     Delete(id) {
 
 

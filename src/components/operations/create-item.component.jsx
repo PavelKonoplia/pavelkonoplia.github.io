@@ -1,9 +1,8 @@
 import * as React from 'react';
-import indexedDBService from '../../services/indexeddb.service';
-import { ItemsReducerState } from '../../reducers/items.reducer';
+import IndexedDBService from '../../services/indexeddb.service';
 import { ItemsActions } from '../../reducers/items.reducer';
-
 import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class CreateItemComponent extends React.Component {
     constructor(props) {
@@ -13,7 +12,7 @@ class CreateItemComponent extends React.Component {
             addingItemName: ''
         };
         this.onChangeAddValue = this.onChangeAddValue.bind(this);
-        this.CreateItem = this.CreateItem.bind(this);
+        this.createItem = this.createItem.bind(this);
         this.getItems = this.getItems.bind(this);
     }
 
@@ -23,51 +22,26 @@ class CreateItemComponent extends React.Component {
         }));
     }
 
-    CreateItem() {
+    createItem() {
         const item = {
             Name: this.state.addingItemName,
             Comments: []
         };
-        indexedDBService.Create(item);
+        IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
     }
-    /*
-        getItem() {
-            indexedDBService.Get(2,(data) => {
-                console.log(data);
-            });
-        }
-    */
+
     getItems() {
-        /*
-        
-        indexedDBService.GetAll((data) => {
-            console.log(data);
-        });*/
-        
-        // indexedDBService.GetAll((data) => {
-        //     ItemsActions.SetItems(data);
-        //     console.log(ItemsActions.SetItems(data));
-        // });
-        this.props.GetItems();
-       // console.log(ItemsReducer.get('Items'));
-        //console.log('d ' + this.props.Items + ' b');
+        IndexedDBService.GetAll((data) => { this.props.GetItems(data) });
     }
-
-    componentWillMount() {
-
-        indexedDBService.GetAll((data) => {
-            ItemsActions.SetItems(data);
-             console.log(data);
-             console.log(ItemsActions.SetItems(data));
-        });
-
-    }
-
 
     render() {
         return (
             <div>
-                <button>Back</button>
+                <Link
+                    to={"/"}
+                    key={1}>
+                    <button>Home</button>
+                </Link>  
                 <form onSubmit={this.addItem}>
                     <input
                         className="focused gray-placeholder"
@@ -87,27 +61,20 @@ class CreateItemComponent extends React.Component {
                         onChange={e => this.onChangeAddValue(e.target.value)}
                     />
                 </form>
-                <button onClick={this.CreateItem}>Add</button>
-                <button onClick={this.getItem}>Get</button>
-                <button onClick={this.GetItems}>GetAll</button>
+                <button onClick={this.createItem}>Add</button>
+
+                <button onClick={this.getItems}>get</button>
             </div>
         );
     }
 }
 
-const mapStateToPropsItems = (state) => ({
+const mapStateToPropsCreateItem = (state) => ({
     Items: state.get('Items')
 });
 
-const mapDispatchToPropsCompetencyGroup = (dispatch) => ({
-    GetItems: () => { dispatch(ItemsActions.SetItems()); },
-    /* UpdateItem: (id: number, name: string) => { dispatch(ItemsActions.Update(id, name)); },
-    DeleteItem: (item) => { dispatch(ItemsActions.Delete(item)); },
-    Back: (item) => {
-        dispatch(push(`/`));
-    }
-    */
+const mapDispatchToPropsCreateItem = (dispatch) => ({
+    GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
 });
 
-
-export default connect(mapStateToPropsItems, mapDispatchToPropsCompetencyGroup)(CreateItemComponent);
+export default connect(mapStateToPropsCreateItem, mapDispatchToPropsCreateItem)(CreateItemComponent);
