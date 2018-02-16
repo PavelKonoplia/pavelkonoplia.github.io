@@ -17,19 +17,18 @@ export class HomeComponent extends React.Component {
                 key={index}>
                 <div>{item.Name}</div>
             </Link>
-            // <div key={index} onClick={this.props.SelectItem(index)}>{item.Name}</div>
         );
         return (
             <div>
                 <Link
                     to={"/create"}
                     key={0}>
-                    Create Item
+                    <button>Create Item</button>
                     </Link>
                 <Link
                     to={"/edit"}
                     key={1}>
-                    Edit Mode
+                    <button>Edit Mode</button>
                     </Link>
                 {renderItems}
 

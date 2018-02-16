@@ -9,8 +9,10 @@ const config = {
 export class IndexedDBService {
     indexedDB;
     open;
-    store;
+    itemStore;
+    indexStore;
     transaction;
+    transactionIndex;
     db;
     constructor() {
         this.indexedDB = window.indexedDB;
@@ -20,6 +22,7 @@ export class IndexedDBService {
         this.Create = this.Create.bind(this);
         this.Delete = this.Delete.bind(this);
         this.GetAll = this.GetAll.bind(this);
+
         this.OpenStore();
     }
 
@@ -28,7 +31,8 @@ export class IndexedDBService {
 
         this.open.onupgradeneeded = () => {
             this.db = this.open.result;
-            this.store = this.db.createObjectStore("ItemsStore", { autoIncrement: true });
+            this.itemStore = this.db.createObjectStore("ItemsStore", { keyPath: "Id" });
+            this.indexStore = this.db.createObjectStore("IndexStore", { autoIncrement: true })
         };
 
     }
@@ -39,9 +43,9 @@ export class IndexedDBService {
         this.open.onsuccess = () => {
             this.db = this.open.result;
             this.transaction = this.db.transaction("ItemsStore", "readwrite");
-            this.store = this.transaction.objectStore("ItemsStore");
+            this.itemStore = this.transaction.objectStore("ItemsStore");
 
-            request = this.store.get(id);
+            request = this.itemStore.get(id);
             request.onsuccess = function (event) {
                 callback(request.result);
             }
@@ -58,9 +62,9 @@ export class IndexedDBService {
         this.open.onsuccess = () => {
             this.db = this.open.result;
             this.transaction = this.db.transaction("ItemsStore", "readwrite");
-            this.store = this.transaction.objectStore("ItemsStore");
+            this.itemStore = this.transaction.objectStore("ItemsStore");
 
-            request = this.store.getAll();
+            request = this.itemStore.getAll();
             request.onerror = (error) => {
                 console.log('you have error ' + error);
             }
@@ -71,6 +75,8 @@ export class IndexedDBService {
 
             this.transaction.oncomplete = () => {
                 this.db.close();
+
+
             };
         }
     }
@@ -80,9 +86,20 @@ export class IndexedDBService {
         this.open.onsuccess = () => {
             this.db = this.open.result;
             this.transaction = this.db.transaction("ItemsStore", "readwrite");
-            this.store = this.transaction.objectStore("ItemsStore");
+            this.itemStore = this.transaction.objectStore("ItemsStore");
 
-            this.store.put(item);
+            this.transactionIndex = this.db.transaction("IndexStore", "readwrite");
+            this.indexStore = this.transactionIndex.objectStore("IndexStore");
+
+            let indexRequests = this.indexStore.delete(item.Id - 1);
+            indexRequests.onerror = (event) => {
+                
+            };
+            indexRequests.onsuccess = (event) => {
+                this.indexStore.put(item.Id);
+            }
+
+            this.itemStore.put(item);
 
             this.transaction.oncomplete = () => {
                 this.db.close();

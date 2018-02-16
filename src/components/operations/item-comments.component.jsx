@@ -69,7 +69,7 @@ class ItemCommentsComponent extends React.Component {
 }
 
 const mapStateToPropsItemComments = (state, ownProps) => ({
-    Item: getSelectedItem(state, ownProps.match.params.id)
+    Item: getSelectedItem(state, +ownProps.match.params.id)
 });
 
 const mapDispatchToPropsItemComments = (dispatch) => ({

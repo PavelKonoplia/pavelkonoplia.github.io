@@ -14,6 +14,7 @@ class CreateItemComponent extends React.Component {
         this.onChangeAddValue = this.onChangeAddValue.bind(this);
         this.createItem = this.createItem.bind(this);
         this.getItems = this.getItems.bind(this);
+        this.setIndexAndCreate = this.setIndexAndCreate.bind(this);
     }
 
     onChangeAddValue(newValue) {
@@ -22,16 +23,25 @@ class CreateItemComponent extends React.Component {
         }));
     }
 
+    setIndexAndCreate(callback) {
+        let index = this.props.Index + 1;
+        this.props.SetIndex(index);
+        callback(index);
+    }
+
     createItem() {
-        const item = {
-            Name: this.state.addingItemName,
-            Comments: []
-        };
-        IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
+        this.setIndexAndCreate((index) => {
+            const item = {
+                Id: index,
+                Name: this.state.addingItemName,
+                Comments: []
+            };
+            IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
+        });
     }
 
     getItems() {
-        IndexedDBService.GetAll((data) => { this.props.GetItems(data) });
+        console.log(this.props.Index);
     }
 
     render() {
@@ -41,7 +51,7 @@ class CreateItemComponent extends React.Component {
                     to={"/"}
                     key={1}>
                     <button>Home</button>
-                </Link>  
+                </Link>
                 <form onSubmit={this.addItem}>
                     <input
                         className="focused gray-placeholder"
@@ -70,11 +80,13 @@ class CreateItemComponent extends React.Component {
 }
 
 const mapStateToPropsCreateItem = (state) => ({
-    Items: state.get('Items')
+    Items: state.get('Items'),
+    Index: state.get('Index')
 });
 
 const mapDispatchToPropsCreateItem = (dispatch) => ({
     GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
+    SetIndex: (index) => { dispatch(ItemsActions.SetLastIndex(index)); },
 });
 
 export default connect(mapStateToPropsCreateItem, mapDispatchToPropsCreateItem)(CreateItemComponent);
