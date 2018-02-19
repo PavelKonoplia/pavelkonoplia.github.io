@@ -36,6 +36,5 @@ const ItemsReducer = handleActions(
 export default ItemsReducer;
 
 export const getSelectedItem = (state, itemId) => {
-    debugger
     return state.get('Items').find((item) => item.get('Id') === itemId);
 }

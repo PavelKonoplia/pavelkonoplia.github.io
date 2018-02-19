@@ -1,19 +1,16 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 
 export class HomeComponent extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const items = this.props.Items.toJS();
 
+
         const renderItems = items.map((item, index) =>
             <Link
-                to={"/item/" + index}
+                to={"/item/" + ++index}
                 key={index}>
                 <div>{item.Name}</div>
             </Link>
@@ -24,14 +21,13 @@ export class HomeComponent extends React.Component {
                     to={"/create"}
                     key={0}>
                     <button>Create Item</button>
-                    </Link>
+                </Link>
                 <Link
                     to={"/edit"}
                     key={1}>
                     <button>Edit Mode</button>
-                    </Link>
+                </Link>
                 {renderItems}
-
             </div>
         );
     }

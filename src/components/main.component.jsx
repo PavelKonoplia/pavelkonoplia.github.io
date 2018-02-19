@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import IndexedDBService from '../services/indexeddb.service';
 import { ItemsActions } from '../reducers/items.reducer';
 import { connect } from 'react-redux';
@@ -7,20 +7,28 @@ import HomeComponent from '../components/home.component';
 import CreateItemComponent from '../components/operations/create-item.component';
 import EditComponent from '../components/operations/edit.component';
 import ItemCommentsComponent from '../components/operations/item-comments.component';
+import EventEmitter from '../common/event-emitter';
 
-export class MainComponent extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+class MainComponent extends React.Component {
 
     componentWillMount() {
-        IndexedDBService.GetAll((data) => {
-            this.props.GetItems(data);
-        });
-        !(this.props.Index >= 0) && this.props.SetIndex(0);
-    }
+        
+        let setItems = (data) => this.props.GetItems(data);
+        let setIndex = (value) => this.props.GetIndex(value);
 
+        EventEmitter.subscribe('initialized', function (e) {
+            IndexedDBService.GetAll((data) => {
+                setItems(data);
+            });
+            IndexedDBService.GetIndex((index) => {
+                let value = index ?
+                    (index[0] >= 1 ? index[0] : 0)
+                    : 0;
+                setIndex(value);
+            });
+        });
+    }
 
     render() {
         return (
@@ -42,7 +50,7 @@ const mapStateToPropsMain = (state) => ({
 
 const mapDispatchToPropsMain = (dispatch) => ({
     GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
-    SetIndex: (index) => { dispatch(ItemsActions.SetLastIndex(index)); },
+    GetIndex: (index) => { dispatch(ItemsActions.SetLastIndex(index)); },
 });
 
 

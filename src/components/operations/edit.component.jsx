@@ -8,14 +8,15 @@ import { Link } from "react-router-dom";
 class EditComponent extends React.Component {
 
     deleteItem(item) {
-        indexedDBService.Delete(item);
+        indexedDBService.Delete(item, (data)=>{
+            this.props.GetItems(data);
+        });
     }
 
     render() {
         const items = this.props.Items.toJS();
 
         const renderItems = items.map((item, index) =>
-            // tslint:disable-next-line:jsx-wrap-multiline 
             <div key={index}>
                 {item.Name}
                 <button onClick={() => this.deleteItem(item)}> Delete</button>
@@ -34,8 +35,11 @@ class EditComponent extends React.Component {
     }
 }
 
-const mapStateToPropsItems = (state) => ({
+const mapStateToPropsEdit = (state) => ({
     Items: state.get('Items')
 });
+const mapDispatchToPropsEdit = (dispatch) => ({
+    GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); }
+});
 
-export default connect(mapStateToPropsItems, undefined)(EditComponent);
+export default connect(mapStateToPropsEdit, mapDispatchToPropsEdit)(EditComponent);

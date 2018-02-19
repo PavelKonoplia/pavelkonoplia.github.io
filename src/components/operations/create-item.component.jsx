@@ -2,18 +2,19 @@ import * as React from 'react';
 import IndexedDBService from '../../services/indexeddb.service';
 import { ItemsActions } from '../../reducers/items.reducer';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 class CreateItemComponent extends React.Component {
+
     constructor(props) {
         super(props);
 
         this.state = {
             addingItemName: ''
         };
+
         this.onChangeAddValue = this.onChangeAddValue.bind(this);
         this.createItem = this.createItem.bind(this);
-        this.getItems = this.getItems.bind(this);
         this.setIndexAndCreate = this.setIndexAndCreate.bind(this);
     }
 
@@ -38,10 +39,6 @@ class CreateItemComponent extends React.Component {
             };
             IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
         });
-    }
-
-    getItems() {
-        console.log(this.props.Index);
     }
 
     render() {
@@ -72,8 +69,6 @@ class CreateItemComponent extends React.Component {
                     />
                 </form>
                 <button onClick={this.createItem}>Add</button>
-
-                <button onClick={this.getItems}>get</button>
             </div>
         );
     }

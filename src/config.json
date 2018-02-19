@@ -1,0 +1,6 @@
+{
+    "itemsStore":"ItemsStore",
+    "indexStore":"IndexStore",
+    "dataBase":"ItemsDatabase",
+    "versionDB":1
+}

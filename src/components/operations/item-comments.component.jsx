@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 class ItemCommentsComponent extends React.Component {
 
+    item;    
     constructor(props) {
         super(props);
 
@@ -25,11 +26,16 @@ class ItemCommentsComponent extends React.Component {
     }
 
     addCommentToItem() {
-        //add comment logic
+        this.item.Comments=this.item.Comments.concat(this.state.addingComment);
+        IndexedDBService.Update(this.item, (data) => {
+            this.props.GetItems(data);
+        });
     }
 
     render() {
+
         let item = this.props.Item && this.props.Item.toJS();
+        this.item = item;
         let renderComments = item && item.Comments.map((comment, index) =>
             <div key={index}>
                 {comment}
@@ -41,10 +47,10 @@ class ItemCommentsComponent extends React.Component {
                     to={"/"}
                     key={1}>
                     <button>Home</button>
-                </Link>
+                </Link>                
                 <div>{item && item.Name}</div>
-                {renderComments ? { renderComments }
-                    : undefined}
+                <div>Current comments</div>
+                {renderComments}                
                 <input
                     className="focused gray-placeholder"
                     type="text"
@@ -71,9 +77,8 @@ class ItemCommentsComponent extends React.Component {
 const mapStateToPropsItemComments = (state, ownProps) => ({
     Item: getSelectedItem(state, +ownProps.match.params.id)
 });
-
 const mapDispatchToPropsItemComments = (dispatch) => ({
-    GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
+    GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); }
 });
 
 export default connect(mapStateToPropsItemComments, mapDispatchToPropsItemComments)(ItemCommentsComponent);
