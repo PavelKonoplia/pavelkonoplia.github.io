@@ -3,6 +3,7 @@ import IndexedDBService from '../../services/indexeddb.service';
 import { ItemsActions } from '../../reducers/items.reducer';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
+import '../main.component.css';
 
 class CreateItemComponent extends React.Component {
 
@@ -30,36 +31,36 @@ class CreateItemComponent extends React.Component {
             Comments: []
         };
         IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
+        this.setState({
+            addingItemName: ''
+        });
     }
 
     render() {
         return (
-            <div>
-                <Link
-                    to={"/"}
-                    key={1}>
-                    <button>Home</button>
-                </Link>
-                <form onSubmit={this.addItem}>
-                    <input
-                        className="focused gray-placeholder"
-                        type="text"
-                        style={{
-                            border: `1px solid #DFDFDF`,
-                            width: `calc`,
-                            height: '20px',
-                            margin: '0',
-                            padding: '5px 35px 5px 13px',
-                            paddingLeft: '13px',
-                            paddingRight: '13px',
-                            fontFamily: 'Roboto-Regular',
-                            fontSize: '14px',
-                            backgroundColor: 'white'
-                        }}
-                        onChange={e => this.onChangeAddValue(e.target.value)}
-                    />
-                </form>
-                <button onClick={this.createItem}>Add</button>
+            <div className="main">
+                <div className="header-title">
+                    <div className="title">
+                        <Link
+                            to={"/"}
+                            key={1}
+                            className="button">&#8592;
+                        </Link>
+                        <div className="header-text">Create new item</div>
+                    </div>
+                </div>
+                <div className="items-area">
+                    <div className="item-row">
+                        <input
+                            className="input-create"
+                            type="text"
+                            value={this.state.addingItemName}
+                            placeholder="New item title .."
+                            onChange={e => this.onChangeAddValue(e.target.value)}
+                        />
+                        <div className="button" onClick={this.createItem}>></div>
+                    </div>
+                </div>
             </div>
         );
     }

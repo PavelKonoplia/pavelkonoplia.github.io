@@ -1,0 +1,15 @@
+.items-title{    
+    color:#333333;
+    font-size: 24px;
+    text-decoration: underline;
+}
+.item-no-hover{
+    text-decoration: none;    
+    font-family: Roboto-Regular;
+    font-size: 24px;
+    color:#333333;
+    padding: 0 0 5px 0;
+    display: flex;
+    align-items: center;
+    height:30px;
+}

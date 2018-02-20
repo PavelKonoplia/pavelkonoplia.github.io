@@ -8,10 +8,10 @@ export class IndexedDBService {
     db;
     constructor() {
         this.indexedDB = window.indexedDB;
-        this.OpenStore();
+        this.InitializeDB();
     }
 
-    OpenStore() {
+    InitializeDB() {
         this.open = this.indexedDB.open(config.dataBase, config.versionDB);
 
         this.open.onupgradeneeded = () => {

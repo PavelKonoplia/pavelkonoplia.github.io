@@ -5,9 +5,13 @@ import { ItemsActions } from '../../reducers/items.reducer';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 
+import '../main.component.css';
+import '../home.component.css';
+import './item-comments.component.css';
+
 class ItemCommentsComponent extends React.Component {
 
-    item;    
+    item;
     constructor(props) {
         super(props);
 
@@ -15,7 +19,8 @@ class ItemCommentsComponent extends React.Component {
             addingComment: ''
         };
 
-        this.addCommentToItem = this.addCommentToItem.bind(this);
+        this.addCommentToItem = this.addCommentToItem.bind(this);        
+        this.onChangeCommentValue = this.onChangeCommentValue.bind(this);
     }
 
     onChangeCommentValue(newValue) {
@@ -25,9 +30,12 @@ class ItemCommentsComponent extends React.Component {
     }
 
     addCommentToItem() {
-        this.item.Comments=this.item.Comments.concat(this.state.addingComment);
+        this.item.Comments = this.item.Comments.concat(this.state.addingComment);
         IndexedDBService.Update(this.item, (data) => {
             this.props.GetItems(data);
+        });
+        this.setState({
+            addingComment: ''
         });
     }
 
@@ -36,39 +44,42 @@ class ItemCommentsComponent extends React.Component {
         let item = this.props.Item && this.props.Item.toJS();
         this.item = item;
         let renderComments = item && item.Comments.map((comment, index) =>
-            <div key={index}>
+            <div key={index} className="item-no-hover">
                 {comment}
             </div>
         );
         return (
-            <div>
-                <Link
-                    to={"/"}
-                    key={1}>
-                    <button>Home</button>
-                </Link>                
-                <div>{item && item.Name}</div>
-                <div>Current comments</div>
-                {renderComments}                
-                <input
-                    className="focused gray-placeholder"
-                    type="text"
-                    style={{
-                        border: `1px solid #DFDFDF`,
-                        width: `calc`,
-                        height: '20px',
-                        margin: '0',
-                        padding: '5px 35px 5px 13px',
-                        paddingLeft: '13px',
-                        paddingRight: '13px',
-                        fontFamily: 'Roboto-Regular',
-                        fontSize: '14px',
-                        backgroundColor: 'white'
-                    }}
-                    onChange={e => this.onChangeCommentValue(e.target.value)}
-                />
-                <button onClick={this.addCommentToItem}>Add comment</button>
+
+            <div className="main">
+                <div className="header-title">
+                    <div className="title">
+                        <Link
+                            to={"/"}
+                            key={1}
+                            className="button">&#8592;
+                        </Link>
+                        <div className="header-text">{item && item.Name}</div>
+                    </div>
+                </div>
+                <div className="items-area">
+                    
+                    <div className="item-container">
+                    <div className="items-title">Current comments:</div>
+                        {renderComments}
+                    </div>
+                    <div className="item-row">
+                        <input
+                            className="input-create"
+                            type="text"
+                            value={this.state.addingComment}
+                            placeholder="New comment .."
+                            onChange={e => this.onChangeCommentValue(e.target.value)}
+                        />
+                        <div className="button" onClick={this.addCommentToItem}>></div>
+                    </div>
+                </div>
             </div>
+
         );
     }
 }
