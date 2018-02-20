@@ -17,7 +17,6 @@ export class IndexedDBService {
         this.open.onupgradeneeded = () => {
             this.db = this.open.result;
             this.db.createObjectStore(config.itemsStore, { keyPath: "Id" });
-            this.db.createObjectStore(config.indexStore, { autoIncrement: true });
         };
 
         this.open.onsuccess = () => {
@@ -26,37 +25,23 @@ export class IndexedDBService {
         }
     }
 
-    Get(id, callback) {
-        let request;
+    Get(id, callback) {     
+
         let transaction = this.db.transaction(config.itemsStore, "readwrite");
         let itemStore = transaction.objectStore(config.itemsStore);
 
-        request = itemStore.get(id);
+        let request = itemStore.get(id);
         request.onsuccess = function (event) {
             callback(request.result);
         }
     }
 
     GetAll(callback) {
-        let request;
+
         let transaction = this.db.transaction(config.itemsStore, "readwrite");
         let itemStore = transaction.objectStore(config.itemsStore);
 
-        request = itemStore.getAll();
-        request.onerror = (error) => {
-            console.log('you have error ' + error);
-        }
-        request.onsuccess = (event) => {
-            callback(request.result);
-        }
-    }
-
-    GetIndex(callback) {
-        let request;
-        let transactionIndex = this.db.transaction(config.indexStore, "readwrite");
-        let indexStore = transactionIndex.objectStore(config.indexStore);
-
-        request = indexStore.getAll();
+        let request = itemStore.getAll();
         request.onerror = (error) => {
             console.log('you have error ' + error);
         }
@@ -66,16 +51,9 @@ export class IndexedDBService {
     }
 
     Create(item, callback) {
+
         let transaction = this.db.transaction(config.itemsStore, "readwrite");
         let itemStore = transaction.objectStore(config.itemsStore);
-
-        let transactionIndex = this.db.transaction(config.indexStore, "readwrite");
-        let indexStore = transactionIndex.objectStore(config.indexStore);
-
-        let indexRequests = item.Id > 0 ? indexStore.delete(item.Id - 1) : indexStore.put(item.Id);
-        indexRequests.onsuccess = (event) => {
-            indexStore.put(item.Id);
-        }
 
         itemStore.put(item);
         transaction.oncomplete = () => {
@@ -84,9 +62,10 @@ export class IndexedDBService {
     }
 
     Delete(item, callback) {
+
         let transaction = this.db.transaction(config.itemsStore, "readwrite");
         let itemStore = transaction.objectStore(config.itemsStore);
-        debugger
+        
         itemStore.delete(item.Id);
         transaction.oncomplete = () => {
             this.GetAll(callback);
@@ -95,10 +74,12 @@ export class IndexedDBService {
 
     Update(item, callback) {
 
+        let getItems = (fn) => this.GetAll(fn);
+
         let transaction = this.db.transaction(config.itemsStore, "readwrite");
         let itemStore = transaction.objectStore(config.itemsStore);
+
         let request = itemStore.get(item.Id);
-        let getItems = (fn) => this.GetAll(fn);
         request.onsuccess = function (event) {
 
             let data = event.target.result;

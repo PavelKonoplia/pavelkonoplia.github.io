@@ -2,20 +2,16 @@ import { createAction, handleActions } from 'redux-actions';
 import { List, fromJS, Record } from 'immutable';
 
 const ItemsActionTypes = {
-    SetItems: 'SET_ITEMS',
-    SetLastIndex: 'SET_ITEMS_INDEX'
+    SetItems: 'SET_ITEMS'
 };
 
 const SetItems = createAction(
     ItemsActionTypes.SetItems,
-    (items) => fromJS(items.map(item => fromJS(item)))
-);
-const SetLastIndex = createAction(
-    ItemsActionTypes.SetLastIndex,
-    (id) => id
+    (items) => fromJS(items.map(item => fromJS(item))),
+    (items) => (items[items.length - 1] ? items[items.length - 1].Id : 0)
 );
 
-export const ItemsActions = { SetItems, SetLastIndex };
+export const ItemsActions = { SetItems };
 
 // State
 export class ItemsReducerState extends Record({ Items: List(), Index: {} }) { }
@@ -24,10 +20,7 @@ export class ItemsReducerState extends Record({ Items: List(), Index: {} }) { }
 const ItemsReducer = handleActions(
     {
         [ItemsActionTypes.SetItems]: (state, action) => {
-            return state.set('Items', action.payload);
-        }, 
-        [ItemsActionTypes.SetLastIndex]: (state, action) => {
-            return state.set('Index', action.payload);
+            return state.set('Index', action.meta).set('Items', action.payload);
         },
     },
     new ItemsReducerState()

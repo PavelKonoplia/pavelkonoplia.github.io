@@ -10,7 +10,7 @@ export class HomeComponent extends React.Component {
 
         const renderItems = items.map((item, index) =>
             <Link
-                to={"/item/" + ++index}
+                to={"/item/" + item.Id}
                 key={index}>
                 <div>{item.Name}</div>
             </Link>

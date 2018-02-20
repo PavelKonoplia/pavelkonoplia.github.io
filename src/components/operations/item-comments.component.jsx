@@ -16,7 +16,6 @@ class ItemCommentsComponent extends React.Component {
         };
 
         this.addCommentToItem = this.addCommentToItem.bind(this);
-
     }
 
     onChangeCommentValue(newValue) {

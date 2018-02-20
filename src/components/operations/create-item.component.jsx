@@ -15,7 +15,6 @@ class CreateItemComponent extends React.Component {
 
         this.onChangeAddValue = this.onChangeAddValue.bind(this);
         this.createItem = this.createItem.bind(this);
-        this.setIndexAndCreate = this.setIndexAndCreate.bind(this);
     }
 
     onChangeAddValue(newValue) {
@@ -24,21 +23,13 @@ class CreateItemComponent extends React.Component {
         }));
     }
 
-    setIndexAndCreate(callback) {
-        let index = this.props.Index + 1;
-        this.props.SetIndex(index);
-        callback(index);
-    }
-
     createItem() {
-        this.setIndexAndCreate((index) => {
-            const item = {
-                Id: index,
-                Name: this.state.addingItemName,
-                Comments: []
-            };
-            IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
-        });
+        const item = {
+            Id: this.props.Index + 1,
+            Name: this.state.addingItemName,
+            Comments: []
+        };
+        IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
     }
 
     render() {
@@ -81,7 +72,6 @@ const mapStateToPropsCreateItem = (state) => ({
 
 const mapDispatchToPropsCreateItem = (dispatch) => ({
     GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
-    SetIndex: (index) => { dispatch(ItemsActions.SetLastIndex(index)); },
 });
 
 export default connect(mapStateToPropsCreateItem, mapDispatchToPropsCreateItem)(CreateItemComponent);

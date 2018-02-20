@@ -13,19 +13,11 @@ import EventEmitter from '../common/event-emitter';
 class MainComponent extends React.Component {
 
     componentWillMount() {
-        
         let setItems = (data) => this.props.GetItems(data);
-        let setIndex = (value) => this.props.GetIndex(value);
 
         EventEmitter.subscribe('initialized', function (e) {
             IndexedDBService.GetAll((data) => {
                 setItems(data);
-            });
-            IndexedDBService.GetIndex((index) => {
-                let value = index ?
-                    (index[0] >= 1 ? index[0] : 0)
-                    : 0;
-                setIndex(value);
             });
         });
     }
@@ -49,8 +41,7 @@ const mapStateToPropsMain = (state) => ({
 });
 
 const mapDispatchToPropsMain = (dispatch) => ({
-    GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
-    GetIndex: (index) => { dispatch(ItemsActions.SetLastIndex(index)); },
+    GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); }
 });
 
 
