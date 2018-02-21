@@ -16,22 +16,14 @@ export class HomeComponent extends React.Component {
         super(props);
 
         this.state = {
-            deletingMode: false
         };
 
         this.deleteItem = this.deleteItem.bind(this);
-        this.changeDeleteMode = this.changeDeleteMode.bind(this);
     }
 
     deleteItem(item) {
         indexedDBService.Delete(item, (data) => {
             this.props.GetItems(data);
-        });
-    }
-
-    changeDeleteMode() {
-        this.setState({
-            deletingMode: !this.state.deletingMode
         });
     }
 
@@ -44,7 +36,7 @@ export class HomeComponent extends React.Component {
                 <Link to={`${addPath}/item/` + item.Id} className="link">
                     {item.Name}
                 </Link>
-                {this.state.deletingMode ? <div className="small-button" onClick={() => this.deleteItem(item)}>delete</div> : undefined}
+                <div className="small-button" onClick={() => this.deleteItem(item)}>delete</div> 
             </div>
         );
         return (
@@ -56,12 +48,6 @@ export class HomeComponent extends React.Component {
                             className="button navigation"
                             key={0}>+
                         </Link>
-                        <div
-                            onClick={this.changeDeleteMode}
-                            className="button navigation"
-                            key={1}>
-                            &#8211;
-                        </div>
                     </div>
                 </div>
                 <div className="items-area">

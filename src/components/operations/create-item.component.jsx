@@ -27,7 +27,8 @@ class CreateItemComponent extends React.Component {
         }));
     }
 
-    createItem() {
+    createItem(event) {
+        event.preventDefault();
         const item = {
             Id: this.props.Index + 1,
             Name: this.state.addingItemName,
@@ -37,10 +38,11 @@ class CreateItemComponent extends React.Component {
         this.setState({
             addingItemName: ''
         });
+        console.log("New item added: "+item.Name);
     }
 
-    render() {        
-        let addPath=config.additionalUrl; 
+    render() {
+        let addPath = config.additionalUrl;
         return (
             <div className="main">
                 <div className="header-title">
@@ -55,13 +57,15 @@ class CreateItemComponent extends React.Component {
                 </div>
                 <div className="items-area">
                     <div className="item-row">
-                        <input
-                            className="input-create"
-                            type="text"
-                            value={this.state.addingItemName}
-                            placeholder="New item title .."
-                            onChange={e => this.onChangeAddValue(e.target.value)}
-                        />
+                        <form onSubmit={this.createItem}>
+                            <input
+                                className="input-create"
+                                type="text"
+                                value={this.state.addingItemName}
+                                placeholder="New item title .."
+                                onChange={e => this.onChangeAddValue(e.target.value)}
+                            />
+                        </form>
                         <div className="button" onClick={this.createItem}>></div>
                     </div>
                 </div>

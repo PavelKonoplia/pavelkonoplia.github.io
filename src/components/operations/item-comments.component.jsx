@@ -21,7 +21,7 @@ class ItemCommentsComponent extends React.Component {
             addingComment: ''
         };
 
-        this.addCommentToItem = this.addCommentToItem.bind(this);        
+        this.addCommentToItem = this.addCommentToItem.bind(this);
         this.onChangeCommentValue = this.onChangeCommentValue.bind(this);
     }
 
@@ -31,18 +31,21 @@ class ItemCommentsComponent extends React.Component {
         }));
     }
 
-    addCommentToItem() {
+    addCommentToItem(event) {
+        event.preventDefault();
         this.item.Comments = this.item.Comments.concat(this.state.addingComment);
         IndexedDBService.Update(this.item, (data) => {
             this.props.GetItems(data);
         });
+        console.log("New comment added: " + this.state.addingComment);
         this.setState({
             addingComment: ''
         });
+
     }
 
     render() {
-        let addPath=config.additionalUrl; 
+        let addPath = config.additionalUrl;
         let item = this.props.Item && this.props.Item.toJS();
         this.item = item;
         let renderComments = item && item.Comments.map((comment, index) =>
@@ -64,19 +67,21 @@ class ItemCommentsComponent extends React.Component {
                     </div>
                 </div>
                 <div className="items-area">
-                    
+
                     <div className="item-container">
-                    <div className="items-title">Current comments:</div>
+                        <div className="items-title">Current comments:</div>
                         {renderComments}
                     </div>
                     <div className="item-row">
-                        <input
-                            className="input-create"
-                            type="text"
-                            value={this.state.addingComment}
-                            placeholder="New comment .."
-                            onChange={e => this.onChangeCommentValue(e.target.value)}
-                        />
+                        <form onSubmit={this.addCommentToItem}>
+                            <input
+                                className="input-create"
+                                type="text"
+                                value={this.state.addingComment}
+                                placeholder="New comment .."
+                                onChange={e => this.onChangeCommentValue(e.target.value)}
+                            />
+                        </form>
                         <div className="button" onClick={this.addCommentToItem}>></div>
                     </div>
                 </div>
