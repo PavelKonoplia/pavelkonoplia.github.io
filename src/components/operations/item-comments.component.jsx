@@ -9,6 +9,8 @@ import '../main.component.css';
 import '../home.component.css';
 import './item-comments.component.css';
 
+import config from '../../config.json';
+
 class ItemCommentsComponent extends React.Component {
 
     item;
@@ -40,7 +42,7 @@ class ItemCommentsComponent extends React.Component {
     }
 
     render() {
-
+        let addPath=config.additionalUrl; 
         let item = this.props.Item && this.props.Item.toJS();
         this.item = item;
         let renderComments = item && item.Comments.map((comment, index) =>
@@ -54,7 +56,7 @@ class ItemCommentsComponent extends React.Component {
                 <div className="header-title">
                     <div className="title">
                         <Link
-                            to={"/"}
+                            to={`${addPath}/`}
                             key={1}
                             className="button">&#8592;
                         </Link>

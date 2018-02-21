@@ -1,5 +1,6 @@
 {
     "itemsStore":"ItemsStore",
     "dataBase":"ItemsDatabase",
-    "versionDB":1
+    "versionDB":1,
+    "additionalUrl":"/crud-app"
 }

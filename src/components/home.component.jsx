@@ -8,6 +8,8 @@ import { ItemsActions } from '../reducers/items.reducer';
 import './main.component.css';
 import './home.component.css';
 
+import config from '../config.json';
+
 export class HomeComponent extends React.Component {
 
     constructor(props) {
@@ -33,12 +35,13 @@ export class HomeComponent extends React.Component {
         });
     }
 
-    render() {
+    render() {        
+        let addPath=config.additionalUrl; 
         const items = this.props.Items.toJS();
         const renderItems = items.map((item, index) =>
             <div key={index}
                 className="item">
-                <Link to={"/item/" + item.Id} className="link">
+                <Link to={`${addPath}/item/` + item.Id} className="link">
                     {item.Name}
                 </Link>
                 {this.state.deletingMode ? <div className="small-button" onClick={() => this.deleteItem(item)}>delete</div> : undefined}
@@ -49,7 +52,7 @@ export class HomeComponent extends React.Component {
                 <div className="header-title">
                     <div className="title">
                         <Link
-                            to={"/create"}
+                            to={`${addPath}/create`}
                             className="button navigation"
                             key={0}>+
                         </Link>

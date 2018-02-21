@@ -9,6 +9,8 @@ import ItemCommentsComponent from '../components/operations/item-comments.compon
 import EventEmitter from '../common/event-emitter';
 import './main.component.css';
 
+import config from '../config.json';
+
 class MainComponent extends React.Component {
 
     componentWillMount() {
@@ -22,12 +24,13 @@ class MainComponent extends React.Component {
     }
 
     render() {
+        let addPath=config.additionalUrl; 
         return (
             <Router>
                 <div className="main-router">
-                    <Route exact path="/" component={HomeComponent} />
-                    <Route path="/create" component={CreateItemComponent} />
-                    <Route path="/item/:id" component={ItemCommentsComponent} />
+                    <Route exact path={`${addPath}/`} component={HomeComponent} />
+                    <Route path={`${addPath}/create`} component={CreateItemComponent} />
+                    <Route path={`${addPath}/item/:id`} component={ItemCommentsComponent} />
                 </div>
             </Router>
         );

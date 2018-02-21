@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 import '../main.component.css';
 
+import config from '../../config.json';
+
+
 class CreateItemComponent extends React.Component {
 
     constructor(props) {
@@ -36,13 +39,14 @@ class CreateItemComponent extends React.Component {
         });
     }
 
-    render() {
+    render() {        
+        let addPath=config.additionalUrl; 
         return (
             <div className="main">
                 <div className="header-title">
                     <div className="title">
                         <Link
-                            to={"/"}
+                            to={`${addPath}/`}
                             key={1}
                             className="button">&#8592;
                         </Link>
