@@ -7,7 +7,6 @@ import '../main.component.css';
 
 import config from '../../config.json';
 
-
 class CreateItemComponent extends React.Component {
 
     constructor(props) {
@@ -29,26 +28,32 @@ class CreateItemComponent extends React.Component {
 
     createItem(event) {
         event.preventDefault();
-        const item = {
-            Id: this.props.Index + 1,
-            Name: this.state.addingItemName,
-            Comments: []
-        };
-        IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
-        this.setState({
-            addingItemName: ''
-        });
-        console.log("New item added: "+item.Name);
+        
+        let create = () => {
+            const item = {
+                Id: this.props.Index + 1,
+                Name: this.state.addingItemName,
+                Comments: []
+            };
+            IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
+            this.setState({
+                addingItemName: ''
+            });
+            console.log("New item added: " + item.Name);
+        }
+
+        (this.state.addingItemName.length > 50 || this.state.addingItemName.length === 0)
+            ? alert("Check number of symbols, it must be in range (1-50)!")
+            : create();
     }
 
     render() {
-        let addPath = config.additionalUrl;
         return (
             <div className="main">
                 <div className="header-title">
                     <div className="title">
                         <Link
-                            to={`${addPath}/`}
+                            to={`${config.additionalUrl}/`}
                             key={1}
                             className="button">&#8592;
                         </Link>
@@ -56,7 +61,7 @@ class CreateItemComponent extends React.Component {
                     </div>
                 </div>
                 <div className="items-area">
-                    <div className="item-row">
+                    <div className="input-row">
                         <form onSubmit={this.createItem}>
                             <input
                                 className="input-create"
