@@ -41,6 +41,7 @@ class CreateItemComponent extends React.Component {
         console.log("New item added: " + item.Name);
         this.props.ToHome();
     }
+    
     createItem(event) {
         event.preventDefault();    
 
