@@ -23,6 +23,7 @@ class ItemCommentsComponent extends React.Component {
 
         this.addCommentToItem = this.addCommentToItem.bind(this);
         this.onChangeCommentValue = this.onChangeCommentValue.bind(this);
+        this.create = this.create.bind(this);
     }
 
     onChangeCommentValue(newValue) {
@@ -30,24 +31,24 @@ class ItemCommentsComponent extends React.Component {
             addingComment: newValue
         }));
     }
+    
+    create() {
+        this.item.Comments = this.item.Comments.concat(this.state.addingComment);
+        IndexedDBService.Update(this.item, (data) => {
+            this.props.GetItems(data);
+        });
+        console.log("New comment added: " + this.state.addingComment);
+        this.setState({
+            addingComment: ''
+        });
+    }
 
     addCommentToItem(event) {
         event.preventDefault();
 
-        let create = () => {
-            this.item.Comments = this.item.Comments.concat(this.state.addingComment);
-            IndexedDBService.Update(this.item, (data) => {
-                this.props.GetItems(data);
-            });
-            console.log("New comment added: " + this.state.addingComment);
-            this.setState({
-                addingComment: ''
-            });
-        }
-
         (this.state.addingComment.length > 50 || this.state.addingComment.length === 0)
             ? alert("Check number of symbols, it must be in range (1-50)!")
-            : create();
+            : this.create();
     }
 
     render() {

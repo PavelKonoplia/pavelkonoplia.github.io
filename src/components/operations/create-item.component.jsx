@@ -3,6 +3,7 @@ import IndexedDBService from '../../services/indexeddb.service';
 import { ItemsActions } from '../../reducers/items.reducer';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
+import { push } from 'react-router-redux';
 import '../main.component.css';
 
 import config from '../../config.json';
@@ -18,6 +19,7 @@ class CreateItemComponent extends React.Component {
 
         this.onChangeAddValue = this.onChangeAddValue.bind(this);
         this.createItem = this.createItem.bind(this);
+        this.create = this.create.bind(this);
     }
 
     onChangeAddValue(newValue) {
@@ -26,25 +28,25 @@ class CreateItemComponent extends React.Component {
         }));
     }
 
+    create() {
+        const item = {
+            Id: this.props.Index + 1,
+            Name: this.state.addingItemName,
+            Comments: []
+        };
+        IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
+        this.setState({
+            addingItemName: ''
+        });
+        console.log("New item added: " + item.Name);
+        this.props.ToHome();
+    }
     createItem(event) {
-        event.preventDefault();
-        
-        let create = () => {
-            const item = {
-                Id: this.props.Index + 1,
-                Name: this.state.addingItemName,
-                Comments: []
-            };
-            IndexedDBService.Create(item, (data) => { this.props.GetItems(data); });
-            this.setState({
-                addingItemName: ''
-            });
-            console.log("New item added: " + item.Name);
-        }
+        event.preventDefault();    
 
         (this.state.addingItemName.length > 50 || this.state.addingItemName.length === 0)
             ? alert("Check number of symbols, it must be in range (1-50)!")
-            : create();
+            : this.create();
     }
 
     render() {
@@ -86,6 +88,10 @@ const mapStateToPropsCreateItem = (state) => ({
 
 const mapDispatchToPropsCreateItem = (dispatch) => ({
     GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
+    ToHome: () => {
+        debugger
+        dispatch(push(`${config.additionalUrl}/`));
+    }
 });
 
 export default connect(mapStateToPropsCreateItem, mapDispatchToPropsCreateItem)(CreateItemComponent);
