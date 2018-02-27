@@ -4,7 +4,9 @@ import { ItemsActions } from '../../reducers/items.reducer';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 import '../main.component.css';
-
+ 
+import { push } from 'react-router-redux';
+import { withRouter } from 'react-router';
 import config from '../../config.json';
 
 
@@ -19,6 +21,7 @@ class CreateItemComponent extends React.Component {
 
         this.onChangeAddValue = this.onChangeAddValue.bind(this);
         this.createItem = this.createItem.bind(this);
+        this.create = this.create.bind(this);
     }
 
     onChangeAddValue(newValue) {
@@ -27,8 +30,7 @@ class CreateItemComponent extends React.Component {
         }));
     }
 
-    createItem(event) {
-        event.preventDefault();
+    create() {
         const item = {
             Id: this.props.Index + 1,
             Name: this.state.addingItemName,
@@ -38,7 +40,15 @@ class CreateItemComponent extends React.Component {
         this.setState({
             addingItemName: ''
         });
-        console.log("New item added: "+item.Name);
+        console.log("New item added: " + item.Name);         
+        this.props.ToHome();
+    }
+
+    createItem(event) {
+        event.preventDefault();
+        (this.state.addingItemName.length > 50 || this.state.addingItemName.length === 0)
+            ? alert("Check number of symbols, it must be in range (1-50)!")
+            : this.create();;
     }
 
     render() {
@@ -56,7 +66,7 @@ class CreateItemComponent extends React.Component {
                     </div>
                 </div>
                 <div className="items-area">
-                    <div className="item-row">
+                    <div className="input-row">
                         <form onSubmit={this.createItem}>
                             <input
                                 className="input-create"
@@ -81,6 +91,9 @@ const mapStateToPropsCreateItem = (state) => ({
 
 const mapDispatchToPropsCreateItem = (dispatch) => ({
     GetItems: (items) => { dispatch(ItemsActions.SetItems(items)); },
+    ToHome: () => {
+        dispatch(push(`${config.additionalUrl}/`));
+    }
 });
 
-export default connect(mapStateToPropsCreateItem, mapDispatchToPropsCreateItem)(CreateItemComponent);
+export default withRouter(connect(mapStateToPropsCreateItem, mapDispatchToPropsCreateItem)(CreateItemComponent));

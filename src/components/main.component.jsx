@@ -10,6 +10,8 @@ import EventEmitter from '../common/event-emitter';
 import './main.component.css';
 
 import config from '../config.json';
+import { withRouter } from 'react-router';
+import {Switch } from 'react-router';
 
 class MainComponent extends React.Component {
 
@@ -24,15 +26,15 @@ class MainComponent extends React.Component {
     }
 
     render() {
-        let addPath=config.additionalUrl; 
+        let addPath = config.additionalUrl;
         return (
-            <Router>
-                <div className="main-router">
+            <div className="main-router">
+                <Switch>
                     <Route exact path={`${addPath}/`} component={HomeComponent} />
                     <Route path={`${addPath}/create`} component={CreateItemComponent} />
                     <Route path={`${addPath}/item/:id`} component={ItemCommentsComponent} />
-                </div>
-            </Router>
+                </Switch>
+            </div>
         );
     }
 }
@@ -46,5 +48,5 @@ const mapDispatchToPropsMain = (dispatch) => ({
 });
 
 
-export default connect(mapStateToPropsMain, mapDispatchToPropsMain)(MainComponent);
+export default withRouter(connect(mapStateToPropsMain, mapDispatchToPropsMain)(MainComponent));
 

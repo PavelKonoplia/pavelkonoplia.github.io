@@ -15,7 +15,9 @@
 }
 .item>.link{
     color:#333333;
-    text-decoration: none;   
+    text-decoration: none;       
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .items-title{    
     color:#333333;
@@ -31,8 +33,11 @@
 }
 .item-container{    
     padding: 40px 0 0 10%;
-    display: flex;
-    flex-direction: column;
+    display: flex; 
+    height: calc(100% - 40px);
+    flex-direction: column;   
+    flex: 1;
+    overflow: auto;
 }
 .small-button{
     height: 30px;

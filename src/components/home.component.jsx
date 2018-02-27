@@ -27,16 +27,17 @@ export class HomeComponent extends React.Component {
         });
     }
 
-    render() {        
-        let addPath=config.additionalUrl; 
+    render() {
+        let addPath = config.additionalUrl;
         const items = this.props.Items.toJS();
         const renderItems = items.map((item, index) =>
-            <div key={index}
-                className="item">
-                <Link to={`${addPath}/item/` + item.Id} className="link">
-                    {item.Name}
-                </Link>
-                <div className="small-button" onClick={() => this.deleteItem(item)}>delete</div> 
+            <div key={index}>
+                <div className="item">
+                    <Link to={`${addPath}/item/` + item.Id} className="link">
+                        {item.Name}
+                    </Link>
+                    <div className="small-button" onClick={() => this.deleteItem(item)}>delete</div>
+                </div>
             </div>
         );
         return (
@@ -45,9 +46,10 @@ export class HomeComponent extends React.Component {
                     <div className="title">
                         <Link
                             to={`${addPath}/create`}
-                            className="button navigation"
+                            className="button"
                             key={0}>+
                         </Link>
+                        <div className="header-text">Items observer</div>
                     </div>
                 </div>
                 <div className="items-area">
