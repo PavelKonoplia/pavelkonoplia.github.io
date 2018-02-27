@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as  Route } from "react-router-dom";
 import IndexedDBService from '../services/indexeddb.service';
 import { ItemsActions } from '../reducers/items.reducer';
 import { connect } from 'react-redux';
