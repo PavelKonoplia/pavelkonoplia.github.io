@@ -16,7 +16,7 @@ class CreateItemComponent extends React.Component {
         this.state = {
             addingItemName: ''
         };
-
+        this.create = this.create.bind(this);
         this.onChangeAddValue = this.onChangeAddValue.bind(this);
         this.createItem = this.createItem.bind(this);
     }
@@ -27,8 +27,7 @@ class CreateItemComponent extends React.Component {
         }));
     }
 
-    createItem(event) {
-        event.preventDefault();
+    create() {
         const item = {
             Id: this.props.Index + 1,
             Name: this.state.addingItemName,
@@ -38,7 +37,14 @@ class CreateItemComponent extends React.Component {
         this.setState({
             addingItemName: ''
         });
-        console.log("New item added: "+item.Name);
+        console.log("New item added: " + item.Name);
+    }
+
+    createItem(event) {
+        event.preventDefault();
+        (this.state.addingItemName.length > 50 || this.state.addingItemName.length === 0)
+            ? alert("Check number of symbols, it must be in range (1-50)!")
+            : this.create();;
     }
 
     render() {
@@ -56,7 +62,7 @@ class CreateItemComponent extends React.Component {
                     </div>
                 </div>
                 <div className="items-area">
-                    <div className="item-row">
+                    <div className="input-row">
                         <form onSubmit={this.createItem}>
                             <input
                                 className="input-create"

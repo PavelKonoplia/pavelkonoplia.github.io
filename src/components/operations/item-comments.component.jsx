@@ -21,6 +21,7 @@ class ItemCommentsComponent extends React.Component {
             addingComment: ''
         };
 
+        this.create = this.create.bind(this);
         this.addCommentToItem = this.addCommentToItem.bind(this);
         this.onChangeCommentValue = this.onChangeCommentValue.bind(this);
     }
@@ -31,8 +32,7 @@ class ItemCommentsComponent extends React.Component {
         }));
     }
 
-    addCommentToItem(event) {
-        event.preventDefault();
+    create() {
         this.item.Comments = this.item.Comments.concat(this.state.addingComment);
         IndexedDBService.Update(this.item, (data) => {
             this.props.GetItems(data);
@@ -41,7 +41,13 @@ class ItemCommentsComponent extends React.Component {
         this.setState({
             addingComment: ''
         });
+    }
 
+    addCommentToItem(event) {
+        event.preventDefault();
+        (this.state.addingComment.length > 50 || this.state.addingComment.length === 0)
+            ? alert("Check number of symbols, it must be in range (1-50)!")
+            : this.create();;
     }
 
     render() {
@@ -49,8 +55,10 @@ class ItemCommentsComponent extends React.Component {
         let item = this.props.Item && this.props.Item.toJS();
         this.item = item;
         let renderComments = item && item.Comments.map((comment, index) =>
-            <div key={index} className="item-no-hover">
-                {comment}
+            <div key={index} >
+                <div className="item-no-hover">
+                    {comment}
+                </div>
             </div>
         );
         return (
@@ -67,12 +75,7 @@ class ItemCommentsComponent extends React.Component {
                     </div>
                 </div>
                 <div className="items-area">
-
-                    <div className="item-container">
-                        <div className="items-title">Current comments:</div>
-                        {renderComments}
-                    </div>
-                    <div className="item-row">
+                    <div className="input-row">
                         <form onSubmit={this.addCommentToItem}>
                             <input
                                 className="input-create"
@@ -83,6 +86,10 @@ class ItemCommentsComponent extends React.Component {
                             />
                         </form>
                         <div className="button" onClick={this.addCommentToItem}>></div>
+                    </div>
+                    <div className="item-container-no-hover">
+                        <div className="items-title">Current comments:</div>
+                        {renderComments}
                     </div>
                 </div>
             </div>
